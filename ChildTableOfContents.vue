@@ -2,8 +2,8 @@
 <ul>
     <li v-for="item in items" :key="item.path">
         <router-link :to="item.path">{{item.title || item.path}}</router-link>
-        <ul v-if="item.headers && header">
-            <li v-for="header in item.headers" :key="header.slug">
+        <ul v-if="header && itemHeaders(item.headers)">
+            <li v-for="header in itemHeaders(item.headers)" :key="header.slug">
                 <router-link :to="item.path + '#' + header.slug">{{header.title}}</router-link>
             </li>
         </ul>
@@ -63,11 +63,25 @@ export default {
         },
         itemChilds(currentUrl) {
             return this.allChilds().filter(p => {
-                return p.regularPath.startsWith(currentUrl) &&
-                    p.regularPath !== currentUrl &&
-                    p.regularPath.endsWith("/") &&
-                    p.regularPath.substr(currentUrl.length).split("/").length === 2;
+                if (!p.regularPath.startsWith(currentUrl) || p.regularPath === currentUrl) {
+                    return false;
+                }
+
+                const split = p.regularPath.substr(currentUrl.length).split("/");
+
+                if (p.regularPath.endsWith("/") && split.length === 2) {
+                    return true;
+                }
+
+                if (p.regularPath.endsWith(".html") && split.length === 1) {
+                    return true;
+                }
+
+                return false;
             });
+        },
+        itemHeaders(headers) {
+            return headers.filter(r => r.level === 2)
         },
         nextLevel() {
             if (this.max === undefined) {
@@ -79,7 +93,6 @@ export default {
             return number + 1;
         },
         isMax() {
-            console.log("here>" + this.max + " - " + this.level)
             if (this.max === undefined) {
                 return false;
             }
