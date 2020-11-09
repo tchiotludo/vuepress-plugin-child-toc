@@ -81,7 +81,7 @@ export default {
             });
         },
         itemHeaders(headers) {
-            return headers.filter(r => r.level === 2)
+            return (headers || []).filter(r => r.level === 2)
         },
         nextLevel() {
             if (this.max === undefined) {
