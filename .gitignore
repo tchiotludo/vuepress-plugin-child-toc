@@ -1,0 +1,10 @@
+Thumbs.db
+.DS_Store
+.idea
+.vscode
+*.iml
+*.ipr
+*.iws
+.project
+.settings
+node_modules/
